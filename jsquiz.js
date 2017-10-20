@@ -91,17 +91,17 @@ $('.button').on('mouseleave', function () {
 *  the answer selections */
 function createQuestionElement(index) {
   var qElement = $('<div>', {
-    id: 'question'
+      id: 'question'
   });
   
   var header = $('<h2>Question ' + (index + 1) + ':</h2>');
-  qElement.append(header);
+      qElement.append(header);
   
   var question = $('<p>').append(myBills[index].question);
-  qElement.append(question);
+      qElement.append(question);
   
   var radioButtons = createRadios(index);
-  qElement.append(radioButtons);
+      qElement.append(radioButtons);
   
   return qElement;
 }
@@ -113,7 +113,7 @@ function createRadios(index) {
   var input = '';
   for (var i = 0; i < myBills[index].choices.length; i++) {
     item = $('<li>');
-    input = '<input type="radio" name="choices" style="height:35px; width:35px; value=' + i + ' />';
+    input = '<input type="radio" name="answer" value=' + i + ' />';
     input += myBills[index].choices[i];
     item.append(input);
     radioList.append(item);
@@ -139,16 +139,16 @@ function displayNext() {
       }
       
 /* Controls display of 'prev' button */
-      if(questionCounter === 1){
+    if(questionCounter === 1){
         $('#prev').show();
-      } else if(questionCounter === 0){
-        
+    } else if(questionCounter === 0){
+  
         $('#prev').hide();
-        $('#next').show();
-      }
-    }else {
-      var scoreElem = displayScore();
-      quiz.append(scoreElem).fadeIn();
+        $('#next').show();  
+        }
+      }else {
+  var scoreElem = displayScore();
+    quiz.append(scoreElem).fadeIn();
       $('#next').hide();
       $('#prev').hide();
       $('#start').show();
