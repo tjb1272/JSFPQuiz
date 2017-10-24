@@ -4,7 +4,8 @@ class quiz {
         this.choices = choices;
         this.correctAnswer = correctAnswer;
     } 
-    }
+
+  }
   
 function billQuestions() {
   const myBills = [
@@ -34,13 +35,24 @@ function billQuestions() {
       correctAnswer: 'd'
     }
   ];
-    
+console.log(myBills[1].choices);
+console.log(myBills);
+
 let questionCounter = 0; /* Tracks question number */
+console.log (questionCounter);
 let selections = []; /* Array containing user choices */
+console.log (selections);
 let quiz = $('#quiz'); /* Quiz div object */
 
 
-    
+getChoicesKeys();
+
+function getChoicesKeys () {
+    let length = Object.keys(myBills[1].choices).length;
+    console.log(length);
+    return(length);
+}
+        
 /* Display initial question */
 displayNext();
 
@@ -90,17 +102,17 @@ $('.button').on('mouseleave', function () {
 /* Creates and returns the div that contains the questions and 
 *  the answer selections */
 function createQuestionElement(index) {
-  var qElement = $('<div>', {
+  let qElement = $('<div>', {
       id: 'question'
   });
   
-  var header = $('<h2>Question ' + (index + 1) + ':</h2>');
+  let header = $('<h2>Question ' + (index + 1) + ':</h2>');
       qElement.append(header);
   
-  var question = $('<p>').append(myBills[index].question);
+  let question = $('<p>').append(myBills[index].question);
       qElement.append(question);
   
-  var radioButtons = createRadios(index);
+  let radioButtons = $(createRadios(index));
       qElement.append(radioButtons);
   
   return qElement;
@@ -108,16 +120,20 @@ function createQuestionElement(index) {
 
 /* Creates a list of the answer choices as radio inputs */
 function createRadios(index) {
-  var radioList = $('<ul>');
-  var item;
-  var input = '';
-  for (var i = 0; i < myBills[index].choices.length; i++) {
-    item = $('<li>');
-    input = '<input type="radio" name="answer" value=' + i + ' />';
-    input += myBills[index].choices[i];
-    item.append(input);
-    radioList.append(item);
+  let radioList = $('<ul>');
+  let item = $('<li>');
+  let input = $('');
+
+  for (let i = 0; i < length; i++) {
+      input = $('<input type="radio" name="answer" value=' + myBills[i].choices + ' />');
+      input += myBills[1].choices;
+      item.append(input);
+      radioList.append(item);
   }
+  console.log(radioList);
+  console.log(item);
+  console.log(input);
+
   return radioList;
 }
 
@@ -132,7 +148,7 @@ function displayNext() {
     $('#question').remove();
     
     if(questionCounter < myBills.length){
-      var nextQuestion = createQuestionElement(questionCounter);
+      let nextQuestion = createQuestionElement(questionCounter);
       quiz.append(nextQuestion).fadeIn();
       if (!(isNaN(selections[questionCounter]))) {
         $('input[value='+selections[questionCounter]+']').prop('checked', true);
@@ -147,7 +163,7 @@ function displayNext() {
         $('#next').show();  
         }
       }else {
-  var scoreElem = displayScore();
+    let scoreElem = displayScore();
     quiz.append(scoreElem).fadeIn();
       $('#next').hide();
       $('#prev').hide();
@@ -158,9 +174,9 @@ function displayNext() {
 
 /* Computes score and returns a paragraph element to be displayed */
 function displayScore() {
-  var score = $('<p>',{id: 'question'});
+  let score = $('<p>',{id: 'question'});
   
-  var numCorrect = 0;
+  let numCorrect = 0;
   for (var i = 0; i < selections.length; i++) {
     if (selections[i] === myBills[i].correctAnswer) {
       numCorrect++;
@@ -172,4 +188,5 @@ function displayScore() {
   return score;
 } 
 }
+
 billQuestions();
