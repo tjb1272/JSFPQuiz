@@ -1,46 +1,48 @@
-class quiz {
-    constructor(question, choices, correctAnswer) {
-        this.question = question;
-        this.choices = choices;
-        this.correctAnswer = correctAnswer;
-    } 
-  }
-  
-function billQuestions() {
-  const myBills = [
-    { 
+
       question: 'Who is on the One Dollar Bill?',
-      choices: ['Thomas Jefferson', 'George Washington', 'James Knox Polk', 'Benjamin Franklin'],
-      correctAnswer: 'George Washington'
+      choices: ['Make a Selection', 'Martin Van Buren', 'George Washington', 'James Knox Polk', 'Benjamin Franklin'],
+      correctAnswer: ['George Washington']
     },
     {
       question: 'Who is on the Fifty Dollar Bill?',
-      choices: ['George Washington', 'John Quincy Adams', 'Ulysses S. Grant', 'Winston Churchill'],
-      correctAnswer: 'John Quincy Adams'
+      choices: ['Make a Selection', 'John Tyler', 'John Quincy Adams', 'Ulysses S. Grant', 'Winston Churchill'],
+      correctAnswer: ['John Quincy Adams']
     },
     {
       question: 'Who is on the Five Dollar Bill?',
-      choices: ['Abraham Lincoln', 'James Monroe', 'Andrew Jackson', 'Ulysses S. Grant'],
-      correctAnswer: 'Abraham Lincoln'
+      choices: ['Make a Selection', 'Abraham Lincoln', 'James Monroe', 'Andrew Jackson', 'Ulysses S. Grant'],
+      correctAnswer: ['Abraham Lincoln']
     },
     {
       question: 'Who is on the Two Dollar Bill?',
-      choices: ['Andrew Johnson', 'John Marshall','John Adams', 'Thomas Jefferson'],
-      correctAnswer: 'Thomas Jefferson'
+      choices: ['Make a Selection', 'Andrew Johnson', 'John Marshall','John Adams', 'Thomas Jefferson'],
+      correctAnswer: ['Thomas Jefferson']
     },
     {
       question: 'Who is on the Hundred Dollar Bill?',
-      choices: ['James Madison', 'Woodrow Wilson', 'James Buchanan', 'Benjamin Franklin'],
-      correctAnswer: 'Benjamin Franklin'
+      choices: ['Make a Selection', 'James Madison', 'Woodrow Wilson', 'James Buchanan', 'Benjamin Franklin'],
+      correctAnswer: ['Benjamin Franklin']
     }
   ];
 
 /* Tracks question number */
 let questionCounter = 0; 
 console.log (questionCounter);
-let selections = []; /* Array containing user choices */
-console.log (selections);
+let selected = new Array (); /* Array containing user choices */
+// selected.toString();
+console.log (selected);
 let quiz = $('#quiz'); /* Quiz div object */
+
+
+/* Pulls correctAnswer Values */
+
+getAnswerValues(); 
+function getAnswerValues() {
+  for (let i = 0; i < myBills[i].correctAnswer.length; i++) {
+   let aValues = Object.values(myBills[i].correctAnswer);
+   console.log(aValues);
+  }
+};
 
 
 /* Pulls the length of the Choices Objects */
@@ -51,6 +53,8 @@ function getChoicesLength () {
     return(clength);
 }
 
+
+
 /* Display initial question */
 displayNext();
 
@@ -59,20 +63,35 @@ $('#next').on('click', function (e) {e.preventDefault();
   
 /* Suspend click listener during fade animation */
     if(quiz.is(':animated')) {return false;} choose();
-  
+
 /* If no user selection, progress is stopped */
-    if(!(isNaN(selections[questionCounter]))) 
-    {alert('Please make a selection!');
-} else {questionCounter++;
-    displayNext();
+    getSelectedValues();
+    function getSelectedValues() {
+        let sValues = Object.values(selected);
+        console.log(sValues);
+  for (i = 0; i < selected.length; i++) {
+    if(sValues[i] === "Make a Selection") {
+        alert('Make a Selection to Move Forward');
+          console.log(sValues);
+            questionCounter--;
+              selected.pop();
+    } else if(sValues[i] !== 'Make a Selection')  {
+        questionCounter++;
+           console.log (questionCounter);
+           console.log(selected.length)
+        displayNext();
+      }
+    }
   }
 });
+
 
 /* Click handler for the 'prev' button */
 $('#prev').on('click', function (e) { e.preventDefault();
   if(quiz.is(':animated')) {return false;}
     choose();
     questionCounter--;
+    selected.pop();
     displayNext();
 });
 
@@ -82,7 +101,7 @@ $('#start').on('click', function (e) { e.preventDefault();
     return false;
   }
     questionCounter = 0;
-    selections = [];
+    selected = [];
     displayNext();
     $('#start').hide();
 });
@@ -108,49 +127,41 @@ function createQuestionElement(index) {
   let question = $('<p>').append(myBills[index].question);
       qElement.append(question);
   
-  let radioButtons = $(createRadios(index));
-      qElement.append(radioButtons);
+  let dropDowns = $(List(index));
+      qElement.append(dropDowns);
   return qElement;
 }
 
 /* Creates a list of the answer choices as radio inputs */
-function createRadios(index) {
-  let radioList = $('<ul>');
+function List(index) {
+  let dropDown = $('<select>');
   let input = $('');
 clength = getChoicesLength();
 
   for (let i = 0; i < clength; i++) {
-    // for (let j = 0; j < myBills[0].question[i].length; j++) {
-      input = $('<li><input type="radio" name="answer" />' + myBills[index].choices[i] + '</input></li>');
-      radioList.append(input);
-      console.log(input);
-      console.log('Im here');
-      console.log(myBills[index].choices[i]);
-  // }
+      input = $('<option> ' + myBills[index].choices[i] + '</option>');
+      dropDown.append(input);
 }
-  return radioList;
+  return dropDown;
 }
-
+ 
 /* Reads the user selection and pushes the value to an array */
 function choose() {
-  selections[questionCounter] = $('input[name="answer"]:checked').serialize();
-}
+      $('option:selected').each(function() {
+        selected.push($(this).val());
+      });
+      console.log(selected);
+      console.log(questionCounter);      
+};
 
 /* Displays next requested element */
 function displayNext() {
-  quiz.fadeOut(function() {
-    $('#question').remove();
-    
-    clength = getChoicesLength();  
-      
-    if(questionCounter < clength){
-      let nextQuestion = createQuestionElement(questionCounter);
-      quiz.append(nextQuestion).fadeIn();
-      if ((isNaN(selections[questionCounter]))) {
-        $('input[value='+selections[questionCounter]+']').prop('checked', true);
-        console.log(selections);
-        console.log(questionCounter);
-      }
+    quiz.fadeOut(function() {
+        $('#question').remove();
+          if(questionCounter < myBills.length){
+            console.log(myBills.length);
+              let nextQuestion = createQuestionElement(questionCounter);
+          quiz.append(nextQuestion).fadeIn();
       
 /* Controls display of 'prev' button */
     if(questionCounter === 1){
@@ -171,20 +182,45 @@ function displayNext() {
 }
 
 /* Computes score and returns a paragraph element to be displayed */
+
+
+
+displayScore();
 function displayScore() {
   let score = $('<p>',{id: 'question'});
-  
-  let numCorrect = 0;
-  for (var i = 0; i < selections.length; i++) {
 
-    if (selections[i] === myBills[i].correctAnswer.value) {
+  getSelectedValues();
+  function getSelectedValues() {
+      let sValues = Object.values(selected);
+      console.log(sValues);
+
+getAnswerValues(); 
+function getAnswerValues() {
+  for (let j = 0; j < myBills[j].correctAnswer.length; j++) {
+   let aValues = Object.values(myBills[j].correctAnswer);
+   
+   console.log(aValues);
+
+let score = [];   
+  let numCorrect = 0;
+  for (var i = 0; i < selected.length; i++) {
+    if (sValues[i] === aValues[i]) {
       numCorrect++;
+      score.push(25);
+      console.log(score);
+      // console.log (myBills[index].correctAnswer[i]);
+      console.log(numCorrect);
+      console.log('im here');
+    }
+      score.append('You got ' + numCorrect + ' questions out of ' + questionCounter + ' right!!!');
+      return score;
+        }
+      }
     }
   }
-  
-  score.append('You got ' + numCorrect + ' questions out of ' + clength + ' right!!!');
-  return score;
-} 
 }
 
+};
+
+startAlert();
 billQuestions();
