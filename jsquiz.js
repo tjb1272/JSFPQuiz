@@ -1,4 +1,19 @@
+class quiz {
+    constructor(question, choices, correctAnswer) {
+        this.question = question;
+        this.choices = choices;
+        this.correctAnswer = correctAnswer;
+    } 
+  }
 
+function startAlert() {
+  alert('Test Your Skills!')
+}
+
+
+function billQuestions() {
+  const myBills = [
+    { 
       question: 'Who is on the One Dollar Bill?',
       choices: ['Make a Selection', 'Martin Van Buren', 'George Washington', 'James Knox Polk', 'Benjamin Franklin'],
       correctAnswer: ['George Washington']
@@ -72,13 +87,16 @@ $('#next').on('click', function (e) {e.preventDefault();
   for (i = 0; i < selected.length; i++) {
     if(sValues[i] === "Make a Selection") {
         alert('Make a Selection to Move Forward');
-          console.log(sValues);
+        console.log('Before Question Counter');
+        console.log(sValues);
             questionCounter--;
               selected.pop();
-    } else if(sValues[i] !== 'Make a Selection')  {
+              console.log(sValues);
+    } else {
+      console.log(questionCounter);
         questionCounter++;
            console.log (questionCounter);
-           console.log(selected.length)
+           console.log('Passed Question Counter' + i);
         displayNext();
       }
     }
@@ -141,7 +159,9 @@ clength = getChoicesLength();
   for (let i = 0; i < clength; i++) {
       input = $('<option> ' + myBills[index].choices[i] + '</option>');
       dropDown.append(input);
+      console.log('new dropdown' + i);
 }
+
   return dropDown;
 }
  
@@ -150,35 +170,39 @@ function choose() {
       $('option:selected').each(function() {
         selected.push($(this).val());
       });
-      console.log(selected);
+      // console.log(selected);
       console.log(questionCounter);      
 };
 
 /* Displays next requested element */
 function displayNext() {
-    quiz.fadeOut(function() {
-        $('#question').remove();
-          if(questionCounter < myBills.length){
-            console.log(myBills.length);
-              let nextQuestion = createQuestionElement(questionCounter);
-          quiz.append(nextQuestion).fadeIn();
-      
+  quiz.fadeOut(function() {
+      $('#question').remove();
+      console.log(myBills.length);
+      console.log(questionCounter);
+      console.log('Next Question');
+        if(questionCounter < myBills.length){
+          console.log(myBills.length);
+          console.log('Show Next Queston');
+            let nextQuestion = createQuestionElement(questionCounter);
+        quiz.append(nextQuestion).fadeIn();
+    
 /* Controls display of 'prev' button */
-    if(questionCounter === 1){
-        $('#prev').show();
-    } else if(questionCounter === 0){
-  
-        $('#prev').hide();
-        $('#next').show();  
-        }
-      }else {
-    let scoreElem = displayScore();
-    quiz.append(scoreElem).fadeIn();
-      $('#next').hide();
+  if(questionCounter === 1){
+      $('#prev').show();
+  } else if(questionCounter === 0){
+
       $('#prev').hide();
-      $('#start').show();
-    }
-  });
+      $('#next').show();  
+      }
+    }else {
+  let scoreElem = displayScore();
+  quiz.append(scoreElem).fadeIn();
+    $('#next').hide();
+    $('#prev').hide();
+    $('#start').show();
+  }
+});
 }
 
 /* Computes score and returns a paragraph element to be displayed */
@@ -194,26 +218,25 @@ function displayScore() {
       let sValues = Object.values(selected);
       console.log(sValues);
 
-getAnswerValues(); 
-function getAnswerValues() {
-  for (let j = 0; j < myBills[j].correctAnswer.length; j++) {
-   let aValues = Object.values(myBills[j].correctAnswer);
-   
-   console.log(aValues);
+  getAnswerValues(); 
+  function getAnswerValues() {
+      for (let j = 0; j < myBills[j].correctAnswer.length; j++) {
+      let aValues = Object.values(myBills[j].correctAnswer);
+      console.log(aValues);
 
-let score = [];   
+  let scoreValue = [];   
   let numCorrect = 0;
-  for (var i = 0; i < selected.length; i++) {
-    if (sValues[i] === aValues[i]) {
-      numCorrect++;
-      score.push(25);
-      console.log(score);
-      // console.log (myBills[index].correctAnswer[i]);
-      console.log(numCorrect);
-      console.log('im here');
+    for (var i = 0; i < selected.length; i++) {
+        if (sValues[i] === aValues[i]) {
+          numCorrect++;
+          scoreValue.push(25);
+          console.log(scoreValue);
+          console.log(numCorrect);
+          console.log('im here');
     }
-      score.append('You got ' + numCorrect + ' questions out of ' + questionCounter + ' right!!!');
-      return score;
+  score.append('You got ' + numCorrect + ' questions out of ' + questionCounter + ' right. Your Score is ' + scoreValue/100 );
+  return score;
+  console.log(score);
         }
       }
     }
